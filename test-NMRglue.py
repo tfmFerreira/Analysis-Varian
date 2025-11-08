@@ -1,3 +1,6 @@
+#converts VNMR data from 1D experiments into 3 columns (time, FID real, FID imag)
+#Here loops over different folders that have identical names except for a number
+
 import nmrglue as ng
 import matplotlib.pyplot as plt
 import numpy as np
