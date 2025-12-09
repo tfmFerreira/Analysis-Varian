@@ -1,0 +1,39 @@
+#converts VNMR data from 2D experiments into x columns (time, FID real, FID imag)
+#Here loops over different folders that have identical names except for a number
+
+
+import os
+import nmrglue as ng
+import matplotlib.pyplot as plt
+import numpy as np
+
+rootdir = os.getcwd()
+
+# The list (vector) of folder numbers you want to loop over
+folder_numbers = [1]
+
+for num in folder_numbers:
+    folder_name = f"1H_2Dnut_pulsecalib_{num}.fid"
+    dirname = os.path.join(rootdir, folder_name)
+    dic,data = ng.varian.read(dirname,"fid","procpar")
+    A = ng.varian.create_data(data)
+    Bf1=dic.get("procpar").get("H1reffrq").get("values")
+    NP = float(dic.get("procpar").get("np").get("values")[0])
+    SW = float(dic.get("procpar").get("sw").get("values")[0])
+    DW = 1/(SW)
+    ACQtime = np.arange(NP/2) * DW
+    out_file = os.path.join(dirname, f"output.txt")
+    data = np.column_stack([ACQtime] + [A[i, :] for i in range(A.shape[0])])
+    np.savetxt(out_file, data, fmt="%.6f")
+    Bf1 = np.array(Bf1, dtype=float)   # convert everything to floats
+    out_file = os.path.join(dirname, f"Bf1.txt")
+    np.savetxt(out_file, Bf1, fmt="%.6f")
+    increment=dic.get("procpar").get("pwHstep").get("values")
+    increment = np.array(increment, dtype=float)   # convert everything to floats
+    out_file = os.path.join(dirname, f"increment.txt")
+    np.savetxt(out_file,increment, fmt="%.6f")
+    coarsepwr=float(dic.get("procpar").get("tpwr").get("values")[0])
+    finepwr=float(dic.get("procpar").get("aH90").get("values")[0])
+    out_file = os.path.join(dirname, f"power.txt")
+    with open(out_file, "w") as f:
+        f.write(f"{coarsepwr} {finepwr}\n")
