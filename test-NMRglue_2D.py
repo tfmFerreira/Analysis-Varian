@@ -10,7 +10,7 @@ import numpy as np
 rootdir = os.getcwd()
 
 # The list (vector) of folder numbers you want to loop over
-folder_numbers = [1]
+folder_numbers = [1, 2, 3, 4, 5, 6]
 
 for num in folder_numbers:
     folder_name = f"1H_2Dnut_pulsecalib_{num}.fid"
@@ -22,9 +22,12 @@ for num in folder_numbers:
     SW = float(dic.get("procpar").get("sw").get("values")[0])
     DW = 1/(SW)
     ACQtime = np.arange(NP/2) * DW
-    out_file = os.path.join(dirname, f"output.txt")
-    data = np.column_stack([ACQtime] + [A[i, :] for i in range(A.shape[0])])
-    np.savetxt(out_file, data, fmt="%.6f")
+    out_file_real = os.path.join(dirname, f"output_real.txt")
+    out_file_imag = os.path.join(dirname, f"output_imag.txt")
+    data_real = np.column_stack([ACQtime] + [A[i, :].real for i in range(A.shape[0])])
+    data_imag = np.column_stack([ACQtime] + [A[i, :].imag for i in range(A.shape[0])])
+    np.savetxt(out_file_real, data_real, fmt="%.6f")
+    np.savetxt(out_file_imag, data_imag, fmt="%.6f")
     Bf1 = np.array(Bf1, dtype=float)   # convert everything to floats
     out_file = os.path.join(dirname, f"Bf1.txt")
     np.savetxt(out_file, Bf1, fmt="%.6f")
