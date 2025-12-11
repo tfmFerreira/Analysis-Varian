@@ -1,8 +1,8 @@
 clear all
 
 %% Experiments to analyse
-expno=1:6;
-foldername='1H_2Dnut_pulsecalib_';
+expno=1200:100:2400;
+foldername='1H_2Dnut_beforeR10_56dB_aH90_';
 
 %% Control parameters
 
@@ -29,7 +29,7 @@ lb2 = 100;
 
 %% Processing
 
-figure(3), clf, 
+figure(4), clf, 
 
 pwr=[];
 t90=[];
@@ -195,7 +195,7 @@ nu2 = swh2/2*linspace(-1, 1, si2);
         sliceposv=0.86;
         
         
-figure(3),
+figure(4),
 
         for nn=1:length(sliceposv)
         slicepos=sliceposv(nn);
@@ -212,9 +212,9 @@ figure(3),
         plot(nu2/1000,abs(I2(pos(1),:))/max(abs(I2(pos(1),1:round(si2/2))))+nexp-1,'b-'),hold on
         pos2=find(abs(I2(pos(1),1:round(si2/2))) == max(abs(I2(pos(1),1:round(si2/2)))));
         plot(nu2(pos2)/1000,abs(I2(pos(1),pos2))/max(abs(I2(pos(1),1:round(si2/2))))+nexp-1,'bo')
-        title(['power = ',num2str(pwr(nexp)) ' dB'])
         set(gca,'YTick',[],'LineWidth',1.5*linewidth,'Box','off','TickDir','out','Ycolor',[1 1 1],'FontSize',fontsize*.8)
         text(nu2(1)/1000,nexp-0.5,[num2str(0.25e6/abs(nu2(pos2))) ' {\mu}s'])
+        text(-nu2(1)/1000,nexp-0.5,[num2str(pwr(nexp)) ' dB'])
         xlabel('nutation frequency / kHz')
         end
     
@@ -224,3 +224,8 @@ clear I I2 Stemp0
 cd ..        
 end
 
+figure(2), clf
+
+plot(pwr,t90*1e6,'o','LineWidth',2), hold on
+t90Dec=t90;
+save nutDec pwr t90Dec
