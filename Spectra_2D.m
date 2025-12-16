@@ -1,14 +1,14 @@
 clear all
 
 %% Experiments to analyse
-expno=1200:100:2400;
-foldername='1H_2Dnut_beforeR10_56dB_aH90_';
+expno=1:9;
+foldername='20251212_9_13C_B1inhomog_';
 
 %% Control parameters
 
-%%% graphics
-fontsize=12;
-linewidth=1;
+%%% slice(s) to analise
+sliceposv=0.86;
+
 
 %%% baseline 
 basel=[0.01 .35 .7  .99];
@@ -172,8 +172,10 @@ nu2 = swh2/2*linspace(-1, 1, si2);
     Itemp1=Itemp;
     INEPT=Itemp;
    % figure(1), plot(ppm,I(:,6)/max(I(:,1))/4,'k'), hold on
-    figure(1), clf
-    plot(ppm,I(:,1)/max(I(:,1))/4,'k'), hold on
+    %figure(1), clf
+    %plot(ppm,(sum(I'.*I')),'k'), hold on
+
+
 
     I2 = real(Itemp); I2 = I2/max(I2);
         
@@ -192,21 +194,27 @@ nu2 = swh2/2*linspace(-1, 1, si2);
         I2 = real(I2); I2 = I2./max(max(I2));
         
 
-        sliceposv=0.86;
         
         
 figure(4),
 
-        for nn=1:length(sliceposv)
+
+fontsize=12;
+linewidth=1;
+
+
+
+ for nn=1:length(sliceposv)
         slicepos=sliceposv(nn);
         pos=find(ppm > slicepos);
         subplot(1,2,1),
         plot(t2*1e6,Stemp0(pos(1),:)/max(Stemp0(pos(1),:))*0.6+nexp-1,'b-o'), hold on
-        plot(t2*1e6,lbfun2(1,:)*0.6+nexp-1,'g-'),
+        %plot(t2*1e6,lbfun2(1,:)*0.6+nexp-1,'g-'),
         hold on
         %xlim([t2(1) t2(length(t2))]*1000)
         set(gca,'YTick',[],'LineWidth',1.5*linewidth,'Box','off','TickDir','out','Ycolor',[1 1 1],'FontSize',fontsize*.8)
         xlabel('time / {\mu}s')
+        
 
         subplot(1,2,2),
         plot(nu2/1000,abs(I2(pos(1),:))/max(abs(I2(pos(1),1:round(si2/2))))+nexp-1,'b-'),hold on
@@ -214,9 +222,12 @@ figure(4),
         plot(nu2(pos2)/1000,abs(I2(pos(1),pos2))/max(abs(I2(pos(1),1:round(si2/2))))+nexp-1,'bo')
         set(gca,'YTick',[],'LineWidth',1.5*linewidth,'Box','off','TickDir','out','Ycolor',[1 1 1],'FontSize',fontsize*.8)
         text(nu2(1)/1000,nexp-0.5,[num2str(0.25e6/abs(nu2(pos2))) ' {\mu}s'])
-        text(-nu2(1)/1000,nexp-0.5,[num2str(pwr(nexp)) ' dB'])
+        text(-nu2(round(length(nu2)/4))/1000,nexp-0.5,['coarse = ' num2str(power(1))])
+        text(-nu2(round(length(nu2)/4))/1000,nexp-0.7,['fine = ' num2str(power(2))])
+
         xlabel('nutation frequency / kHz')
         end
+
     
 t90(nexp)= 0.25/abs(nu2(pos2));
 
@@ -224,8 +235,5 @@ clear I I2 Stemp0
 cd ..        
 end
 
-figure(2), clf
-
-plot(pwr,t90*1e6,'o','LineWidth',2), hold on
-t90Dec=t90;
-save nutDec pwr t90Dec
+figure(1), clf
+plot(t90*1e6, pwr,'o','LineWidth',2)

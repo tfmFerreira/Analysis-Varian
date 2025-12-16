@@ -10,10 +10,10 @@ import numpy as np
 rootdir = os.getcwd()
 
 # The list (vector) of folder numbers you want to loop over
-folder_numbers = [1, 2, 3, 4, 5, 6]
+folder_numbers = np.arange(1, 10)
 
 for num in folder_numbers:
-    folder_name = f"1H_2Dnut_pulsecalib_{num}.fid"
+    folder_name = f"20251212_9_13C_B1inhomog_{num}.fid"
     dirname = os.path.join(rootdir, folder_name)
     dic,data = ng.varian.read(dirname,"fid","procpar")
     A = ng.varian.create_data(data)
@@ -31,12 +31,12 @@ for num in folder_numbers:
     Bf1 = np.array(Bf1, dtype=float)   # convert everything to floats
     out_file = os.path.join(dirname, f"Bf1.txt")
     np.savetxt(out_file, Bf1, fmt="%.6f")
-    increment=dic.get("procpar").get("pwHstep").get("values")
+    increment=dic.get("procpar").get("pwXstep").get("values")
     increment = np.array(increment, dtype=float)   # convert everything to floats
     out_file = os.path.join(dirname, f"increment.txt")
     np.savetxt(out_file,increment, fmt="%.6f")
     coarsepwr=float(dic.get("procpar").get("tpwr").get("values")[0])
-    finepwr=float(dic.get("procpar").get("aH90").get("values")[0])
+    finepwr=float(dic.get("procpar").get("aX90").get("values")[0])
     out_file = os.path.join(dirname, f"power.txt")
     with open(out_file, "w") as f:
         f.write(f"{coarsepwr} {finepwr}\n")
