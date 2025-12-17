@@ -7,7 +7,7 @@ foldername='20251212_9_13C_B1inhomog_';
 %% Control parameters
 
 %%% slice(s) to analise
-sliceposv=0.86;
+sliceposv=3.555;
 
 
 %%% baseline 
@@ -191,7 +191,7 @@ nu2 = swh2/2*linspace(-1, 1, si2);
         
         Stemp2(:,1) = 0.5*Stemp2(:,1);
         I2 = fftshift(fft(Stemp2,si2,2),2);
-        I2 = real(I2); I2 = I2./max(max(I2));
+        I2 = abs(I2); I2 = I2./max(max(I2));
         
 
         
